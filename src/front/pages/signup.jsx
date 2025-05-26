@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -17,15 +19,16 @@ export default function Signup() {
 
     if (res.ok) {
       setMsg("Usuario creado. Ya puedes loguearte.");
+      navigate("/login")
     } else {
       setMsg(data.msg || "Error en el registro");
     }
   };
 
   return (
-    <div>
+    <div className="text-center p-3">
       <h2>Registro</h2>
-      <form onSubmit={handleSignup}>
+      <form onSubmit={handleSignup} className="p-3">
         <input
           type="email"
           placeholder="Email"

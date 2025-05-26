@@ -7,36 +7,24 @@ const Private = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Token en Private:", token);  // <-- VERIFICA EL TOKEN AQUÍ
+  const fetchPrivateData = async () => {
+    const token = localStorage.getItem("token");
 
-    if (!token) {
-      navigate("/login");
-      return;
+    try {
+      const res = await fetch(import.meta.env.VITE_BACKEND_URL + "/private", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // <-- ¡AQUÍ está la clave!
+        },
+      });
+
+      const data = await res.json();
+      console.log(data); // o actualizar estado
+    } catch (error) {
+      console.error("Error al obtener datos privados:", error);
     }
-
-    const fetchPrivateData = async () => {
-      try {
-        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/private", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setMessage(data.message);
-        } else {
-          localStorage.removeItem("token");
-          setMessage("Acceso denegado. Necesitas iniciar sesión.");
-          navigate("/login");
-        }
-      } catch (error) {
-        console.error(error);
-        setMessage("Error de conexión");
-        localStorage.removeItem("token");
-        navigate("/login");
-      }
-    };
+  };
 
     fetchPrivateData();
   }, [token, navigate]);
@@ -44,7 +32,7 @@ const Private = () => {
   return (
     <div>
       <h2>Página Privada</h2>
-      <p>{message}</p>
+      <p>Este es un mensaje privado que solo puedes ver si estas logeado.</p>
     </div>
   );
 };

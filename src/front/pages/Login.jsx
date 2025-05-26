@@ -32,7 +32,7 @@ export default function Login() {
   };
 
   return (
-    <div>
+    <div className="text-center">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input

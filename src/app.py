@@ -117,8 +117,8 @@ def login():
     if not user or not check_password_hash(user.password, password):
         return jsonify({"msg": "Credenciales incorrectas"}), 401
 
-    token = create_access_token(identity=user.id)
-    return jsonify({"token": token}), 200
+    access_token = create_access_token(identity=str(user.id))
+    return jsonify({"token": access_token}), 200
 
 # Endpoint privado protegido con JWT
 
@@ -128,7 +128,12 @@ def login():
 def private():
     current_user_id = get_jwt_identity()
     print("ID del usuario autenticado:", current_user_id)
+    
     user = User.query.get(current_user_id)
+    
+    if user is None:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
     return jsonify({
         "message": f"Hola, {user.email}. Este es contenido privado.",
         "user": user.serialize()
